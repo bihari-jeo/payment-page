@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:20px; }
+    .step { border:1px solid #ccc; margin:15px 0; padding:15px; background:#eaf6ff; border-radius:8px; }
+    .label { font-weight:bold; }
+    .value { color:#e67e22; margin-left:10px; }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      z-index: 900;
+    }
+
+    /* Popup */
+    .popup {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      z-index: 1000;
+      display: none;
+      width: 50%;   /* Half screen width */
+      max-width: 400px;
+    }
+    .popup img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+    .popup button {
+      margin-top: 12px;
+      padding: 8px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .popup button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h2>Step 1 : Copy Payment Details</h2>
+  <div class="step">
+    <p><span class="label">App:</span><span id="app" class="value"></span></p>
+    <p><span class="label">Product:</span><span id="product" class="value"></span></p>
+    <p><span class="label">Amount:</span><span id="amount" class="value"></span></p>
+    <p><span class="label">VPA/UPI:</span><span id="vpa" class="value"></span></p>
+  </div>
+
+  <h2>Step 2 : Transfer the Amount</h2>
+  <div class="step">
+    <p>Please transfer the exact amount shown above.</p>
+  </div>
+
+  <h2>Step 3 : Enter Ref No. to Complete Payment</h2>
+  <div class="step">
+    <input type="text" id="utr" placeholder="Enter 12-digit UTR" style="width:250px;padding:5px;">
+    <button onclick="submitUTR()">Submit UTR</button>
+  </div>
+
+  <!-- Overlay + Popup -->
+  <div class="overlay" id="overlay"></div>
+  <div class="popup" id="popup">
+    <h3>Payment Screenshot</h3>
+    <img src="payment.jpg" alt="Payment Screenshot">
+    <br>
+    <button onclick="closePopup()">OK</button>
+  </div>
+
+  <script>
+    // Read query parameters
+    const params = new URLSearchParams(window.location.search);
+    document.getElementById("app").textContent = params.get("app") || "Default App";
+    document.getElementById("product").textContent = params.get("product") || "Default Product";
+    document.getElementById("amount").textContent = params.get("amount") || "0";
+    document.getElementById("vpa").textContent = params.get("vpa") || "not-provided@upi";
+
+    // Show popup on page load
+    window.onload = function(){
+      document.getElementById("popup").style.display = "block";
+      document.getElementById("overlay").style.display = "block";
+    }
+
+    function closePopup(){
+      document.getElementById("popup").style.display = "none";
+      document.getElementById("overlay").style.display = "none";
+    }
+
+    // UTR validation
+    function submitUTR(){
+      const utr = document.getElementById("utr").value;
+      if(utr.length === 12 && /^\d+$/.test(utr)){
+        alert("UTR submitted: " + utr);
+      } else {
+        alert("UTR must be 12 digits!");
+      }
+    }
+  </script>
+</body>
+</html>
