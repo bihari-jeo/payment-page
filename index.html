@@ -4,69 +4,206 @@
   <meta charset="UTF-8">
   <title>Payment Gateway</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    .container { width: 600px; margin: 30px auto; }
-    .box { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; }
+    /* General Body Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f1f1;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: linear-gradient(to bottom, #f5f7fa, #e2e8f0);
+    }
+
+    .container {
+      width: 80%;
+      max-width: 500px;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      color: #4a90e2;
+    }
+
+    h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #4a90e2;
+    }
+
+    .box {
+      border: 1px solid #ddd;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .box input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 8px 0;
+      font-size: 14px;
+      background-color: #fff;
+    }
+
+    .box button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .box button:hover {
+      background-color: #0056b3;
+    }
+
+    .box p {
+      font-size: 16px;
+      color: #333;
+    }
+
+    /* Modal styling */
     .modal {
-      display: none; position: fixed; top: 0; left: 0; 
-      width: 100%; height: 100%; background: rgba(0,0,0,0.6); 
-      justify-content: center; align-items: center;
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
     }
+
     .modal-content {
-      background: #fff; padding: 20px; border-radius: 5px;
-      max-width: 90%; text-align: center;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90%;
+      text-align: center;
     }
-    .modal-content img { max-width: 100%; }
-    .close { cursor: pointer; color: red; font-weight: bold; }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      max-width: 350px;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff0000;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: #ff3333;
+    }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h2>Payment Gateway</h2>
 
+    <!-- Step 1 - Copy Amount and Account Information -->
     <div class="box">
-      <h3>Step 1 : Copy Amount and Account Information</h3>
-      <p>Amount: <span id="amount"></span></p>
-      <p>Name: <span id="name"></span></p>
-      <p>VPA/UPI: <span id="vpa"></span></p>
+      <h3>Step 1: Copy Information</h3>
+      <p>Amount: <span id="amount">₹ 100000</span></p>
+      <p>Name: <span id="name">Usama</span></p>
+      <p>VPA/UPI: <span id="vpa">usama@ybl</span></p>
     </div>
 
+    <!-- Step 2 - Input Information Manually -->
     <div class="box">
-      <h3>Step 2 : Transfer the amount</h3>
+      <h3>Step 2: Enter Information Manually</h3>
+      <input type="text" id="inputAmount" placeholder="Amount">
+      <input type="text" id="inputName" placeholder="Name">
+      <input type="text" id="inputVPA" placeholder="VPA/UPI">
+      <input type="text" id="inputNewField" placeholder="New Field">
+      <button onclick="updatePage()">Update Page</button>
+    </div>
+
+    <!-- Step 3 - Transfer Information -->
+    <div class="box">
+      <h3>Step 3: Transfer the amount</h3>
       <p>Please record your UTR (Ref No.) after payment.</p>
     </div>
 
+    <!-- Step 4 - Enter Ref No -->
     <div class="box">
-      <h3>Step 3 : Enter Ref No. to complete payment</h3>
+      <h3>Step 4: Enter Ref No. to complete payment</h3>
       <input type="text" placeholder="Enter 12-digit UTR">
     </div>
 
-    <button onclick="openModal()">See Sample Screenshot</button>
+    <!-- Sample Screenshot Modal -->
+    <button class="button" onclick="openModal()">See Sample Screenshot</button>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal for Sample Screenshot -->
   <div class="modal" id="sampleModal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">✖</span>
       <h3>Sample of UTR (UPI Ref. ID)</h3>
-      <img src="payment.jpg" alt="Sample Screenshot">
+      <img src="screenshot.png" alt="Sample Screenshot">
     </div>
   </div>
 
   <script>
-    // Get query parameters
+    // Get query parameters from the URL
     const urlParams = new URLSearchParams(window.location.search);
-    document.getElementById("amount").textContent = urlParams.get("amount") || "N/A";
-    document.getElementById("name").textContent = urlParams.get("name") || "N/A";
-    document.getElementById("vpa").textContent = urlParams.get("vpa") || "N/A";
+    document.getElementById("amount").textContent = urlParams.get("amount") || "₹ 100000";
+    document.getElementById("name").textContent = urlParams.get("name") || "Usama";
+    document.getElementById("vpa").textContent = urlParams.get("vpa") || "usama@ybl";
+    document.getElementById("newField").textContent = urlParams.get("newField") || "N/A";
 
+    // Update page with manually entered data
+    function updatePage() {
+      const amount = document.getElementById("inputAmount").value;
+      const name = document.getElementById("inputName").value;
+      const vpa = document.getElementById("inputVPA").value;
+      const newField = document.getElementById("inputNewField").value;
+
+      const newUrl = `?amount=${amount}&name=${name}&vpa=${vpa}&newField=${newField}`;
+      window.history.replaceState({}, '', newUrl); // Update URL without reloading
+
+      // Update the displayed values
+      document.getElementById("amount").textContent = amount;
+      document.getElementById("name").textContent = name;
+      document.getElementById("vpa").textContent = vpa;
+      document.getElementById("newField").textContent = newField;
+    }
+
+    // Modal functions
     function openModal() {
       document.getElementById("sampleModal").style.display = "flex";
     }
+
     function closeModal() {
       document.getElementById("sampleModal").style.display = "none";
     }
   </script>
+
 </body>
 </html>
-
